@@ -15,7 +15,7 @@ import draw as draw_mod
 
 WIDTH, HEIGHT = 1280, 800
 FPS = 60
-REVEAL_DURATION_SEC = 36.0
+REVEAL_DURATION_SEC = 108.0
 
 
 def main():
@@ -54,6 +54,18 @@ def main():
                     camera.paused = not camera.paused
                 elif event.key == pygame.K_r:
                     camera.reduced_motion = not camera.reduced_motion
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    camera.dragging = True
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                    pygame.mouse.get_rel()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    camera.dragging = False
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+            elif event.type == pygame.MOUSEMOTION:
+                if camera.dragging:
+                    camera.handle_mouse_drag(event.rel[0])
 
         camera.update(dt)
         if not camera.paused:
