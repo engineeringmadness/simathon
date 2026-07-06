@@ -39,3 +39,29 @@ def draw_particle(surface, screen, color_list, idx):
     x = int(screen[idx, 0])
     y = int(screen[idx, 1])
     pygame.draw.circle(surface, head, (x, y), 3)
+
+
+_font = None
+
+
+def _get_font():
+    global _font
+    if _font is None:
+        _font = pygame.font.Font(None, 18)
+    return _font
+
+
+def draw_axis(surface, screen_pts, axis):
+    font = _get_font()
+    aaline = pygame.draw.aaline
+    for i, j, color in axis.segments:
+        aaline(
+            surface, color,
+            (float(screen_pts[i, 0]), float(screen_pts[i, 1])),
+            (float(screen_pts[j, 0]), float(screen_pts[j, 1])),
+        )
+    for text, idx, color in axis.labels:
+        x = int(screen_pts[idx, 0]) + 4
+        y = int(screen_pts[idx, 1]) - 9
+        label = font.render(text, True, color)
+        surface.blit(label, (x, y))

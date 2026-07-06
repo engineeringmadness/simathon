@@ -10,6 +10,7 @@ import pygame
 import simulation
 import render as render_mod
 from camera import Camera
+from axis import Axis
 import draw as draw_mod
 
 WIDTH, HEIGHT = 1280, 800
@@ -33,6 +34,7 @@ def main():
     renderer = render_mod.Renderer(trail, WIDTH, HEIGHT)
     color_list = renderer.color_list
     camera = Camera()
+    axis = Axis(trail)
 
     point_cap = simulation.POINT_CAP
     reveal_rate = point_cap / REVEAL_DURATION_SEC
@@ -59,8 +61,10 @@ def main():
         n = int(revealed)
 
         screen_pts = renderer.project(camera.yaw, camera.pitch)
+        axis_pts = renderer.project_points(axis.points, camera.yaw, camera.pitch)
 
         surface.fill((0, 0, 0))
+        draw_mod.draw_axis(surface, axis_pts, axis)
         draw_mod.draw_segments(surface, screen_pts, color_list, n)
         if n < point_cap:
             draw_mod.draw_particle(surface, screen_pts, color_list, n - 1)

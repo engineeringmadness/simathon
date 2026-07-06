@@ -105,3 +105,15 @@ class Renderer:
             self.half_w, self.half_h,
         )
         return self.screen
+
+    def project_points(self, points3d, yaw, pitch):
+        pts = np.ascontiguousarray(points3d, dtype=np.float32)
+        m = pts.shape[0]
+        screen = np.zeros((m, 3), dtype=np.float32)
+        project_kernel(
+            pts, screen, m,
+            yaw, pitch, self.focal, self.cam_dist,
+            float(self.center[0]), float(self.center[1]), float(self.center[2]),
+            self.half_w, self.half_h,
+        )
+        return screen
