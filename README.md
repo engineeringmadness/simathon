@@ -17,7 +17,9 @@ it famously resembles a butterfly. It demonstrates how simple, fixed rules can p
 **Setup**
 
 > conda create -n simathon python=3.12
+
 > pip install -r requirements.txt
+
 > python lorenz-attractor/main.py
    
 ### My First Sim 
