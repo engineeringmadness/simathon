@@ -16,9 +16,10 @@ class Camera:
         self.paused = False
         self.reduced_motion = False
         self.dragging = False
+        self.frozen = False
 
     def update(self, dt):
-        if self.paused or self.dragging:
+        if self.paused or self.dragging or self.frozen:
             return
         rate = YAW_RATE * (0.5 if self.reduced_motion else 1.0)
         self.yaw += rate * dt

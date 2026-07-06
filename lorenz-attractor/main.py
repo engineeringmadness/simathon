@@ -37,8 +37,9 @@ def main():
     axis = Axis(trail)
 
     point_cap = simulation.POINT_CAP
-    reveal_rate = point_cap / REVEAL_DURATION_SEC
+    base_rate = point_cap / REVEAL_DURATION_SEC
     revealed = 1.0
+    speed = 1.0
 
     frame = 0
     running = True
@@ -59,6 +60,8 @@ def main():
                     camera.dragging = True
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                     pygame.mouse.get_rel()
+                elif event.button == 3:
+                    camera.frozen = not camera.frozen
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     camera.dragging = False
@@ -66,31 +69,34 @@ def main():
             elif event.type == pygame.MOUSEMOTION:
                 if camera.dragging:
                     camera.handle_mouse_drag(event.rel[0])
+            elif event.type == pygame.MOUSEWHEEL:
+                speed = max(0.1, min(5.0, speed + event.y * 0.1))
 
         camera.update(dt)
         if not camera.paused:
-            revealed = min(revealed + reveal_rate * dt, point_cap)
-        n = int(revealed)
+            revealed = revealed + base_rate * speed * dt
+        trail_drawn = min(int(revealed), point_cap)
+        particle_idx = int(revealed) % point_cap
 
         screen_pts = renderer.project(camera.yaw, camera.pitch)
         axis_pts = renderer.project_points(axis.points, camera.yaw, camera.pitch)
 
         surface.fill((0, 0, 0))
         draw_mod.draw_axis(surface, axis_pts, axis)
-        draw_mod.draw_segments(surface, screen_pts, color_list, n)
-        if n < point_cap:
-            draw_mod.draw_particle(surface, screen_pts, color_list, n - 1)
+        draw_mod.draw_segments(surface, screen_pts, color_list, trail_drawn)
+        draw_mod.draw_particle(surface, screen_pts, color_list, particle_idx)
+        draw_mod.draw_ui(surface)
         pygame.display.flip()
 
         frame += 1
         if frame % 15 == 0:
-            if n < point_cap:
-                pct = n * 100 // point_cap
+            if trail_drawn < point_cap:
+                pct = trail_drawn * 100 // point_cap
                 pygame.display.set_caption(
-                    f"Lorenz Attractor - drawing {pct}% - {int(clock.get_fps())} fps")
+                    f"Lorenz Attractor - drawing {pct}% - {speed:.1f}x - {int(clock.get_fps())} fps")
             else:
                 pygame.display.set_caption(
-                    f"Lorenz Attractor - {int(clock.get_fps())} fps")
+                    f"Lorenz Attractor - {speed:.1f}x - {int(clock.get_fps())} fps")
 
     pygame.quit()
 

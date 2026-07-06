@@ -65,3 +65,26 @@ def draw_axis(surface, screen_pts, axis):
         y = int(screen_pts[idx, 1]) - 9
         label = font.render(text, True, color)
         surface.blit(label, (x, y))
+
+
+_overlay_font = None
+
+
+def _get_overlay_font():
+    global _overlay_font
+    if _overlay_font is None:
+        _overlay_font = pygame.font.Font(None, 32)
+    return _overlay_font
+
+
+def draw_ui(surface):
+    font = _get_overlay_font()
+    lines = [
+        ("Lorenz Attractor", (200, 200, 200)),
+        ("Drag to rotate  |  Right-click to freeze  |  Scroll to change speed", (160, 160, 160)),
+    ]
+    y = 8
+    for text, color in lines:
+        label = font.render(text, True, color)
+        surface.blit(label, (8, y))
+        y += 34
