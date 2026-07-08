@@ -30,10 +30,3 @@ Functionality is quite straightforward. The simluation can be controlled using m
 > pip install -r requirements.txt
 
 > python lorenz-attractor/main.py
-   
-### My First Sim 
-My first go at building a realistic black hole simulator, didn't go that well :).
-
-**Tooling**
-- Claude Code
-- Kimi K2.7 Code model for the build
